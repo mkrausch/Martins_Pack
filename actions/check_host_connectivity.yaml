@@ -1,0 +1,43 @@
+---
+name: check_host_connectivity
+pack: martins_pack
+description: Basic Test Workflow
+enabled: true
+runner_type: mistral-v2
+entry_point: workflows/check_host_connectivity.yaml
+parameters:
+    username:
+        type: string
+        description: Username
+        default: admin
+        position: 0
+    enable_password:
+        type: string
+        description: enable password
+        position: 1
+    device_ip_address:
+        type: string
+        description: IP address of the host
+        position: 2
+    vrf:
+        type: string
+        description: VRF
+        position: 3
+    enable_username:
+        type: string
+        description: enable username
+        position: 4
+    password:
+        type: string
+        description: Password
+        default: password
+        position: 5
+    ip_address:
+        type: string
+        description: IP address of the VDX device
+        position: 6
+    port:
+        type: string
+        description: physical Port
+        position: 7
+

@@ -1,8 +1,8 @@
-name: "onlineport"
+name: "ssh_access"
 runner_type: "python-script"
-description: "is the port online or not?"
+description: "Print message"
 enabled: true
-entry_point: "onlineport.py"
+entry_point: "ssh_access.py"
 parameters:
   ip_address:
     type: "string"
@@ -24,8 +24,8 @@ parameters:
     type: "string"
     description: "Enable Password"
     required: true
-  port:
+  command:
     type: "string"
-    description: "Port x/y/z"
+    description: "Command"
     required: true
 

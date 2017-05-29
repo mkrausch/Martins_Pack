@@ -1,8 +1,8 @@
-name: "onlineport"
+name: "ping_device"
 runner_type: "python-script"
-description: "is the port online or not?"
+description: "pings a device from a VDX system"
 enabled: true
-entry_point: "onlineport.py"
+entry_point: "ping_device.py"
 parameters:
   ip_address:
     type: "string"
@@ -24,8 +24,13 @@ parameters:
     type: "string"
     description: "Enable Password"
     required: true
-  port:
+  device_ip_address:
     type: "string"
-    description: "Port x/y/z"
+    description: "IP address of the device to ping"
+    required: true
+  vrf:
+    type: "string"
+    description: "VRF"
+    default: "default-vrf"
     required: true
 

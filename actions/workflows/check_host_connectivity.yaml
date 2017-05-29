@@ -1,0 +1,108 @@
+---
+version: '2.0'
+
+default.check_host_connectivity:
+  input:
+    - username
+    - enable_password
+    - device_ip_address
+    - vrf
+    - enable_username
+    - password
+    - ip_address
+    - port
+  output:
+    slack_message: <% $.slack_message %>
+  tasks:
+    check_port:
+      # [58, 101]
+      action: default.onlineport
+      input:
+        username: '<% $.username %>'
+        password: '<% $.password %>'
+        enable_username: '<% $.enable_username %>'
+        enable_password: '<% $.enable_password %>'
+        ip_address: '<% $.ip_address %>'
+        port: '<% $.port %>'
+      publish:
+        task_message: <% task(check_port).result.result %>
+        slack_message: 'Port is offline!'
+      on-success:
+        - ping_host: <% $.task_message != false %>
+        - Slack: <% $.task_message = false %>
+      on-error:
+        - Slack_error
+    ping_host:
+      # [239, 201]
+      action: default.ping_device
+      input:
+        username: '<% $.username %>'
+        password: '<% $.password %>'
+        enable_username: '<% $.enable_username %>'
+        enable_password: '<% $.enable_password %>'
+        ip_address: '<% $.ip_address %>'
+        device_ip_address: '<% $.device_ip_address %>'
+        vrf: '<% $.vrf %>'
+      publish:
+        task_message: <% task(ping_host).result.result %>
+        slack_message: 'Host Ping failed!'
+      on-success:
+        - ping_default_gw: <% $.task_message != false %>
+        - Slack: <% $.task_message = false %>
+      on-error:
+        - Slack_error
+    ping_default_gw:
+      # [389, 301]
+      action: default.ping_device
+      input:
+        username: '<% $.username %>'
+        password: '<% $.password %>'
+        enable_username: '<% $.enable_username %>'
+        enable_password: '<% $.enable_password %>'
+        ip_address: '<% $.ip_address %>'
+        device_ip_address: '192.168.100.13'
+        vrf: '<% $.vrf %>'
+      publish:
+        task_message: <% task(ping_default_gw).result.result %>
+        slack_message: 'Default Gateway Ping failed!'
+      on-success:
+        - ping_internet: <% $.task_message != false %>
+        - Slack: <% $.task_message = false %>
+      on-error:
+        - Slack_error
+    ping_internet:
+      # [488, 402]
+      action: default.ping_device
+      input:
+        username: '<% $.username %>'
+        password: '<% $.password %>'
+        enable_username: '<% $.enable_username %>'
+        enable_password: '<% $.enable_password %>'
+        ip_address: '<% $.ip_address %>'
+        device_ip_address: '8.8.8.8'
+        vrf: '<% $.vrf %>'
+      publish:
+        task_message: <% task(ping_internet).result.result %>
+        slack_message: 'Internet is unreachable!'
+      on-success:
+        - Slack: <% $.task_message = false %>
+      on-error:
+        - Slack_error
+    Slack:
+      # [57, 703]
+      action: chatops.post_message
+      input:
+        channel: 'bwctest.slack.com'
+        user: 'mkrausch'
+        whisper: true
+        message: '<% $.slack_message %>'
+      on-error:
+        - Slack_error
+    Slack_error:
+      # [309, 704]
+      action: chatops.post_message
+      input:
+        channel: 'bwctest.slack.com'
+        user: 'mkrausch'
+        whisper: true
+        message: 'Something went wrong!'

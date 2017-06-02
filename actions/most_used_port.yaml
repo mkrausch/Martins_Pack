@@ -1,0 +1,27 @@
+name: "most_used_port"
+runner_type: "python-script"
+description: "what is the most used Port on a device?"
+enabled: true
+entry_point: "most_used_port.py"
+parameters:
+  ip_address:
+    type: "string"
+    description: "ip address of the switch"
+    required: true
+  username:
+    type: "string"
+    description: "Login Username"
+    required: true
+  password:
+    type: "string"
+    description: "Login Password"
+    required: true
+  enable_username:
+    type: "string"
+    description: "Enable Username"
+    required: true
+  enable_password:
+    type: "string"
+    description: "Enable Password"
+    required: true
+
